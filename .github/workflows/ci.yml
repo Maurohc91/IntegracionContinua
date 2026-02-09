@@ -1,46 +1,29 @@
-name: CI - Ejecutar Pruebas
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, master, develop]
+    branches:
+      - main
   pull_request:
-    branches: [main, master]
-  workflow_dispatch: # Permite ejecución manual
+    branches:
+      - main
 
 jobs:
-  test:
-    name: Ejecutar Pruebas Maven
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código
+      - name: Clonar repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar JDK 21
-        uses: actions/setup-java@v4
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v3
         with:
-          java-version: '21'
           distribution: 'temurin'
-          cache: maven
+          java-version: '17'
 
-      - name: Dar permisos de ejecución a mvnw
-        run: chmod +x ./mvnw
+      - name: Construir con Maven
+        run: mvn clean package
 
-      - name: Ejecutar pruebas con Maven
-        run: ./mvnw clean test -B
-
-      - name: Publicar resultados de pruebas
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Resultados de Pruebas JUnit
-          path: target/surefire-reports/*.xml
-          reporter: java-junit
-
-      - name: Subir reportes de pruebas como artefacto
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: surefire-reports
-          path: target/surefire-reports/
-          retention-days: 30
+      - name: Ejecutar pruebas unitarias
+        run: mvn test

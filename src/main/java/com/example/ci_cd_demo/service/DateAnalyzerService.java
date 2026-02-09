@@ -9,6 +9,9 @@ import com.example.ci_cd_demo.model.DateAnalysisResult;
  * Determina si una fecha es válida, si pertenece a un año bisiesto,
  * el signo del zodiaco occidental y el signo del zodiaco chino.
  * Solo acepta fechas entre los años 2000 y 2005.
+ * 
+ * @author Mauro
+ * @version 1.0
  */
 @Service
 public class DateAnalyzerService {
